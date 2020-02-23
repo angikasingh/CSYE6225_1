@@ -14,6 +14,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.csye6225.spring2020.courseservice.datamodel.Course;
+import com.csye6225.spring2020.courseservice.datamodel.Lecture;
+import com.csye6225.spring2020.courseservice.datamodel.Student;
 import com.csye6225.spring2020.courseservice.service.CoursesService;
 
 @Path("courses")
@@ -37,6 +39,22 @@ public class CoursesResource {
 		return courseService.getCourse(courseCode);
 	}
 	
+	@GET
+	@Path("/{courseCode}/lectures")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Lecture> getLecturesByCourse(@PathParam("courseCode") String courseCode) {
+		System.out.println("Course Resource: Looking for: " + courseCode);
+		return courseService.getLecturesByCourse(courseCode);
+	}
+	
+	@GET
+	@Path("/{courseCode}/students")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Student> getStudentsByCourse(@PathParam("courseCode") String courseCode) {
+		System.out.println("Course Resource: Looking for: " + courseCode);
+		return courseService.getStudentsByCourse(courseCode);
+	}
+	
 	@DELETE
 	@Path("/{courseCode}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -52,16 +70,29 @@ public class CoursesResource {
 	}
 	
 	@PUT
-	@Path("/{courseCode}")
+	@Path("/{courseCode}/addLecture/{lectureId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Course addToRoster(@PathParam("courseCode") String courseCode, @QueryParam("studentId") String studentId) {
+	public Course addLecture(@PathParam("courseCode") String courseCode, @PathParam("lectureId") String lectureId) {
+		return courseService.addLecture(courseCode, lectureId);
+	}
+	
+	@PUT
+	@Path("/{courseCode}/addStudent/{studentId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Course addToRoster(@PathParam("courseCode") String courseCode, @PathParam("studentId") String studentId) {
 		return courseService.enrollStudent(courseCode, studentId);
+	}
+	
+	@PUT
+	@Path("/{courseCode}/addToBoard/{message}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Course addMessageToBoard(@PathParam("courseCode") String courseCode, @PathParam("message") String message) {
+		return courseService.addmessageToBoard(courseCode, message);
 	}
 
 	@PUT
 	@Path("/{courseCode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
 	public Course updateCourse(@PathParam("courseCode") String courseCode, Course course) {
 		return courseService.updateCourseInformation(courseCode, course);
 	}

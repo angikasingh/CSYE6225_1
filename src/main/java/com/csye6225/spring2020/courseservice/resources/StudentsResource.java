@@ -60,9 +60,9 @@ public class StudentsResource {
 	}
 	
 	@PUT
-	@Path("/{studentId}")
+	@Path("/{studentId}/enrollCourse/{courseCode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Student enrollCourse(@PathParam("studentId") String studentId, @QueryParam("courseCode") String courseCode) {
+	public Student enrollCourse(@PathParam("studentId") String studentId, @PathParam("courseCode") String courseCode) {
 		return studentService.enrollCourse(studentId, courseCode);
 	}
 }

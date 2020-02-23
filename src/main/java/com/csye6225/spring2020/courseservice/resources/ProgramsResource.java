@@ -54,4 +54,11 @@ public class ProgramsResource {
 	public Program updateProgram(@PathParam("programCode") String programCode, Program program) {
 		return programService.updateProgramInformation(programCode, program);
 	}
+	
+	@PUT
+	@Path("/{programCode}/addCourse/{courseCode}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Program addCourse(@PathParam("programCode") String programCode, @PathParam("courseCode") String courseCode) {
+		return programService.addCourse(programCode, courseCode);
+	}
 }

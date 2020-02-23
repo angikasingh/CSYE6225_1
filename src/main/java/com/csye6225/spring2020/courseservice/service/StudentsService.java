@@ -65,6 +65,11 @@ public class StudentsService {
 	
 	public Student enrollCourse(String studentId, String courseCode) {
 		Student student = student_Map.get(studentId);
+		String programCode = student.getProgramCode();
+		Program prog = prog_Map.get(programCode);
+		if (!prog.getCourses().contains(courseCode)) {
+			return null;
+		}
 		if (!course_Map.containsKey(courseCode)) {
 			return null;
 		}

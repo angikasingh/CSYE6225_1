@@ -31,13 +31,16 @@ public class ProgramService {
 		return prog;
 	}
 	
-	public Program addCourse(String programId, String courseId) {
-		Program prog = prog_Map.get(programId);
-		if (!course_Map.containsKey(courseId)) {
+	public Program addCourse(String programCode, String courseCode) {
+		if (!prog_Map.containsKey(programCode)) {
 			return null;
 		}
-		prog.addCourse(courseId);
-		prog_Map.put(programId, prog);
+		if (!course_Map.containsKey(courseCode)) {
+			return null;
+		}
+		Program prog = prog_Map.get(programCode);
+		prog.addCourse(courseCode);
+		prog_Map.put(programCode, prog);
 		return prog;
 	}
 
@@ -52,6 +55,9 @@ public class ProgramService {
 	}
 
 	public Program updateProgramInformation(String progCode, Program newProg) {
+		if (!prog_Map.containsKey(progCode)) {
+			return null;
+		}
 		Program p = prog_Map.get(progCode);
 		try {
 			p.updateInfo(newProg);
