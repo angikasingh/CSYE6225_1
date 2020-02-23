@@ -1,6 +1,7 @@
 package com.csye6225.spring2020.courseservice.datamodel;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 
 public class Lecture {
 	private String id;
@@ -12,11 +13,11 @@ public class Lecture {
 		
 	}
 	
-	public Lecture(String id, String notes, String associatedMaterials, String lectureDate) {
+	public Lecture(String id, String notes, String associatedMaterials) {
 		this.id = id;
 		this.notes = notes;
 		this.associatedMaterials = associatedMaterials;
-		this.lectureDate = lectureDate;
+		this.lectureDate = new Date().toString();
 	}
 	
 	public String getid() {

@@ -13,56 +13,46 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.csye6225.spring2020.courseservice.datamodel.Course;
-import com.csye6225.spring2020.courseservice.service.CoursesService;
+import com.csye6225.spring2020.courseservice.datamodel.Lecture;
+import com.csye6225.spring2020.courseservice.service.LecturesService;
 
 @Path("lectures")
 public class LectureResource {
-	CoursesService courseService = new CoursesService();
+	LecturesService lectureService = new LecturesService();
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Course> getStudentsByProfessor(@QueryParam("profId") String profId) {
-		if (profId == null) {
-			return courseService.getAllCourses();
-		}
-		return courseService.getCoursesByProfId(profId);
+	public List<Lecture> getAllLectures() {
+		return lectureService.getAllLectures();
 	}
 	
 	@GET
-	@Path("/{courseCode}")
+	@Path("/{lectureId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Course getProfessor(@PathParam("courseCode") String courseCode) {
-		System.out.println("Course Resource: Looking for: " + courseCode);
-		return courseService.getCourse(courseCode);
+	public Lecture getLecture(@PathParam("lectureId") String lectureId) {
+		System.out.println("Lecture Resource: Looking for: " + lectureId);
+		return lectureService.getLecture(lectureId);
 	}
 	
 	@DELETE
-	@Path("/{courseCode}")
+	@Path("/{lectureId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Course deleteCourse(@PathParam("courseCode") String courseCode) {
-		return courseService.deleteCourse(courseCode);
+	public Lecture deleteCourse(@PathParam("lectureId") String lectureId) {
+		return lectureService.deleteLecture(lectureId);
 	}
 
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Course addCourse(Course course) {
-		return courseService.addCourse(course);
-	}
-	
-	@POST
-	@Path("/{courseCode}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Course addToRoster(@PathParam("courseCode") String courseCode, @QueryParam("studentId") String studentId) {
-		return courseService.enrollStudent(courseCode, studentId);
+	public Lecture addCourse(Lecture lecture) {
+		return lectureService.addLecture(lecture);
 	}
 
 	@PUT
-	@Path("/{courseCode}")
+	@Path("/{lectureId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Course updateCourse(@PathParam("courseCode") String courseCode, Course course) {
-		return courseService.updateCourseInformation(courseCode, course);
+	public Lecture updateCourse(@PathParam("lectureId") String lectureId, Lecture lecture) {
+		return lectureService.updateLectureInformation(lectureId, lecture);
 	}
 }

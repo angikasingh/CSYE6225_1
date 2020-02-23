@@ -15,7 +15,6 @@ public class StudentsService {
 	static HashMap<String, Program> prog_Map = InMemoryDatabase.getProgDB();
 	
 	public List<Student> getAllStudents() {
-		// Getting the list
 		ArrayList<Student> list = new ArrayList<>();
 		for (Student s : student_Map.values()) {
 			list.add(s);
@@ -24,7 +23,6 @@ public class StudentsService {
 	}
 	
 	public List<Student> getStudentsByProgramCode(String proCode) {
-		// Getting the list
 		ArrayList<Student> list = new ArrayList<>();
 		for (Student s : student_Map.values()) {
 			if (s.getProgramCode().contentEquals(proCode)) {
