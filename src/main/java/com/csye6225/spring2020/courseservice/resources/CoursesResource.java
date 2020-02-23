@@ -84,9 +84,10 @@ public class CoursesResource {
 	}
 	
 	@PUT
-	@Path("/{courseCode}/addToBoard/{message}")
+	@Path("/{courseCode}/addToBoard")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Course addMessageToBoard(@PathParam("courseCode") String courseCode, @PathParam("message") String message) {
+	@Consumes(MediaType.TEXT_PLAIN)
+	public Course addMessageToBoard(@PathParam("courseCode") String courseCode, String message) {
 		return courseService.addmessageToBoard(courseCode, message);
 	}
 

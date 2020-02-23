@@ -8,12 +8,14 @@ import com.csye6225.spring2020.courseservice.datamodel.Course;
 import com.csye6225.spring2020.courseservice.datamodel.InMemoryDatabase;
 import com.csye6225.spring2020.courseservice.datamodel.Lecture;
 import com.csye6225.spring2020.courseservice.datamodel.Professor;
+import com.csye6225.spring2020.courseservice.datamodel.Program;
 import com.csye6225.spring2020.courseservice.datamodel.Student;
 
 public class CoursesService {
 	static HashMap<String, Course> course_Map = InMemoryDatabase.getCourseDB();
 	static HashMap<String, Professor> professor_Map = InMemoryDatabase.getProfessorDB();
 	static HashMap<String, Student> student_Map = InMemoryDatabase.getStudentDB();
+	static HashMap<String, Program> prog_Map = InMemoryDatabase.getProgDB();
 	static HashMap<String, Lecture> lecture_Map = InMemoryDatabase.getLectureDB();
 	
 	public List<Course> getAllCourses() {
@@ -101,6 +103,12 @@ public class CoursesService {
 			return null;
 		}
 		if (!student_Map.containsKey(studentId)) {
+			return null;
+		}
+		Student s = student_Map.get(studentId);
+		String programCode = s.getProgramCode();
+		Program prog = prog_Map.get(programCode);
+		if (!prog.getCourses().contains(courseCode)) {
 			return null;
 		}
 		c.enrollStudent(studentId);
