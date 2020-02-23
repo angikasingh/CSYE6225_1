@@ -1,8 +1,6 @@
 package com.csye6225.spring2020.courseservice.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,12 +12,10 @@ public class ProfessorsService {
 	static HashMap<String, Professor> prof_Map = InMemoryDatabase.getProfessorDB();
 
 	public ProfessorsService() {
+		
 	}
 
-	// Getting a list of all professor
-	// GET "..webapi/professors"
 	public List<Professor> getAllProfessors() {
-		// Getting the list
 		ArrayList<Professor> list = new ArrayList<>();
 		for (Professor prof : prof_Map.values()) {
 			list.add(prof);
@@ -27,34 +23,35 @@ public class ProfessorsService {
 		return list;
 	}
 
-	// Adding a professor
-	public Professor addProfessor(Professor prof) {
-		prof_Map.put(prof.getAlias(), prof);
+	public Professor addProfessor(Professor p) {
+		String professorId = prof_Map.size() + 1 + "";
+ 		Professor prof = new Professor(professorId, p.getAlias(), p.getFirstName(), p.getLastName(), p.getDepartment());
+		prof_Map.put(prof.getProfessorId(), prof);
 		return prof;
 	}
 
-	// Getting One Professor
-	public Professor getProfessor(String alias) {
-		// Simple HashKey Load
-		return prof_Map.getOrDefault(alias, null);
+	public Professor getProfessor(String profId) {
+		return prof_Map.getOrDefault(profId, null);
 	}
 
-	// Deleting a professor
-	public Professor deleteProfessor(String alias) {
-		Professor deletedProfDetails = prof_Map.get(alias);
-		prof_Map.remove(alias);
+	public Professor deleteProfessor(String profId) {
+		Professor deletedProfDetails = prof_Map.get(profId);
+		prof_Map.remove(profId);
 		return deletedProfDetails;
 	}
 
-	// Updating Professor Info
-	public Professor updateProfessorInformation(String alias, Professor prof) {
-		prof_Map.put(alias, prof);
+	public Professor updateProfessorInformation(String profId, Professor newProfInfo) {
+		Professor prof = prof_Map.get(profId);
+		try {
+			prof.updateInfo(newProfInfo);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			return null;
+		}
+		prof_Map.put(profId, prof);
 		return prof;
 	}
 
-	// Get professors in a department
 	public List<Professor> getProfessorsByDepartment(String department) {
-		// Getting the list
 		ArrayList<Professor> list = new ArrayList<>();
 		for (Professor prof : prof_Map.values()) {
 			if (prof.getDepartment().equals(department)) {
@@ -63,7 +60,5 @@ public class ProfessorsService {
 		}
 		return list;
 	}
-
-	// Get professors for a year with a size limit
 
 }

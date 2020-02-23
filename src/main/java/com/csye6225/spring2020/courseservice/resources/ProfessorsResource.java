@@ -1,7 +1,5 @@
 package com.csye6225.spring2020.courseservice.resources;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -18,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 import com.csye6225.spring2020.courseservice.datamodel.Professor;
 import com.csye6225.spring2020.courseservice.service.ProfessorsService;
 
-// .. /webapi/myresource
 @Path("professors")
 public class ProfessorsResource {
 
@@ -26,7 +23,7 @@ public class ProfessorsResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Professor> getProfessorsByDeparment(@QueryParam("department") String department) {
+	public List<Professor> getProfessorsByDepartment(@QueryParam("department") String department) {
 		if (department == null) {
 			return profService.getAllProfessors();
 		}
@@ -34,36 +31,33 @@ public class ProfessorsResource {
 
 	}
 
-	// ... webapi/professor/1
 	@GET
-	@Path("/{alias}")
+	@Path("/{professorId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Professor getProfessor(@PathParam("alias") String alias) {
-		System.out.println("Professor Resource: Looking for: " + alias);
-		return profService.getProfessor(alias);
+	public Professor getProfessor(@PathParam("professorId") String profid) {
+		System.out.println("Professor Resource: Looking for: " + profid);
+		return profService.getProfessor(profid);
 	}
 
 	@DELETE
-	@Path("/{alias}")
+	@Path("/{professorId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Professor deleteProfessor(@PathParam("alias") String alias) {
-		return profService.deleteProfessor(alias);
+	public Professor deleteProfessor(@PathParam("professorId") String profid) {
+		return profService.deleteProfessor(profid);
 	}
 
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Professor addProfessor(Professor prof) {
-		prof.setEmail();
-		prof.setJoiningDate(new Date().toString());
 		return profService.addProfessor(prof);
 	}
 
 	@PUT
-	@Path("/{alias}")
+	@Path("/{professorId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Professor updateProfessor(@PathParam("alias") String alias, Professor prof) {
-		return profService.updateProfessorInformation(alias, prof);
+	public Professor updateProfessor(@PathParam("professorId") String profId, Professor prof) {
+		return profService.updateProfessorInformation(profId, prof);
 	}
 }
