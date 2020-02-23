@@ -32,7 +32,7 @@ public class StudentsResource {
 	@GET
 	@Path("/{studentId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Student getProfessor(@PathParam("studentId") String studentId) {
+	public Student getStudent(@PathParam("studentId") String studentId) {
 		System.out.println("Student Resource: Looking for: " + studentId);
 		return studentService.getStudent(studentId);
 	}

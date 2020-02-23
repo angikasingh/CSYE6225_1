@@ -22,7 +22,7 @@ public class CoursesResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Course> getStudentsByProfessor(@QueryParam("profId") String profId) {
+	public List<Course> getCoursesByProfessor(@QueryParam("profId") String profId) {
 		if (profId == null) {
 			return courseService.getAllCourses();
 		}
@@ -32,7 +32,7 @@ public class CoursesResource {
 	@GET
 	@Path("/{courseCode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Course getProfessor(@PathParam("courseCode") String courseCode) {
+	public Course getCourse(@PathParam("courseCode") String courseCode) {
 		System.out.println("Course Resource: Looking for: " + courseCode);
 		return courseService.getCourse(courseCode);
 	}
