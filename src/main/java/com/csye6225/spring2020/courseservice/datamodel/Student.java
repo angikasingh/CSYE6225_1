@@ -4,6 +4,11 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+
+@DynamoDBTable(tableName="Student")
 public class Student {
 	private String studentId;
 	private String name;
@@ -23,6 +28,7 @@ public class Student {
 		this.programCode = programCode;
 	}
 
+	@DynamoDBHashKey(attributeName="studentId")
 	public String getStudentId() {
 		return studentId;
 	}
@@ -31,6 +37,7 @@ public class Student {
 		this.studentId = studentId;
 	}
 
+	@DynamoDBAttribute(attributeName="name")
 	public String getName() {
 		return name;
 	}
@@ -39,6 +46,7 @@ public class Student {
 		this.name = name;
 	}
 
+	@DynamoDBAttribute(attributeName="imageUrl")
 	public String getImageUrl() {
 		return imageUrl;
 	}
@@ -47,19 +55,25 @@ public class Student {
 		this.imageUrl = imageUrl;
 	}
 
+	@DynamoDBAttribute(attributeName="enrolledCourseCodes")
 	public List<String> getEnrolledCourseCodes() {
 		return enrolledCourseCodes;
+	}
+	
+	public void setEnrolledCourseCodes(List<String> courseCodes) {
+		this.enrolledCourseCodes = courseCodes;
 	}
 
 	public void enrollCourse(String courseCode) {
 		this.enrolledCourseCodes.add(courseCode);
 	}
 	
+	@DynamoDBAttribute(attributeName="programCode")
 	public String getProgramCode() {
 		return programCode;
 	}
 
-	public void setProgram(String programCode) {
+	public void setProgramCode(String programCode) {
 		this.programCode = programCode;
 	}
 	

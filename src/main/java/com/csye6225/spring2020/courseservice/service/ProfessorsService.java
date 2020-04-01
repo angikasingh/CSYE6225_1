@@ -3,62 +3,62 @@ package com.csye6225.spring2020.courseservice.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.csye6225.spring2020.courseservice.datamodel.DynamoDbConnector;
 import com.csye6225.spring2020.courseservice.datamodel.InMemoryDatabase;
 import com.csye6225.spring2020.courseservice.datamodel.Professor;
 
 public class ProfessorsService {
 
-	static HashMap<String, Professor> prof_Map = InMemoryDatabase.getProfessorDB();
-
+	DynamoDBMapper mapper; 
+	
 	public ProfessorsService() {
-		
+		mapper = new DynamoDBMapper(DynamoDbConnector.getClient());
 	}
 
 	public List<Professor> getAllProfessors() {
-		ArrayList<Professor> list = new ArrayList<>();
-		for (Professor prof : prof_Map.values()) {
-			list.add(prof);
-		}
-		return list;
+		DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+		List<Professor> scanResult = mapper.scan(Professor.class, scanExpression);
+		return scanResult;
 	}
 
 	public Professor addProfessor(Professor p) {
-		String professorId = prof_Map.size() + 1 + "";
+		DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+		String professorId = mapper.count(Professor.class, scanExpression) + 1 + "";
  		Professor prof = new Professor(professorId, p.getAlias(), p.getFirstName(), p.getLastName(), p.getDepartment());
-		prof_Map.put(prof.getProfessorId(), prof);
+		mapper.save(prof);
 		return prof;
 	}
 
 	public Professor getProfessor(String profId) {
-		return prof_Map.getOrDefault(profId, null);
+		Professor result = mapper.load(Professor.class, profId);
+		return result;
 	}
 
 	public Professor deleteProfessor(String profId) {
-		Professor deletedProfDetails = prof_Map.get(profId);
-		prof_Map.remove(profId);
+		Professor deletedProfDetails = getProfessor(profId);
+		mapper.delete(deletedProfDetails);
 		return deletedProfDetails;
 	}
 
 	public Professor updateProfessorInformation(String profId, Professor newProfInfo) {
-		Professor prof = prof_Map.get(profId);
+		Professor prof = getProfessor(profId);
+		if(prof == null) {
+			return null;
+		}
 		try {
 			prof.updateInfo(newProfInfo);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			return null;
 		}
-		prof_Map.put(profId, prof);
+		mapper.save(prof);
 		return prof;
-	}
-
-	public List<Professor> getProfessorsByDepartment(String department) {
-		ArrayList<Professor> list = new ArrayList<>();
-		for (Professor prof : prof_Map.values()) {
-			if (prof.getDepartment().equals(department)) {
-				list.add(prof);
-			}
-		}
-		return list;
 	}
 
 }

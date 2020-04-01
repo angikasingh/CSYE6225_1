@@ -22,11 +22,8 @@ public class StudentsResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Student> getStudentsByProgramCode(@QueryParam("progCode") String progCode) {
-		if (progCode == null) {
-			return studentService.getAllStudents();
-		}
-		return studentService.getStudentsByProgramCode(progCode);
+	public List<Student> getAllStudents() {
+		return studentService.getAllStudents();
 	}
 	
 	@GET

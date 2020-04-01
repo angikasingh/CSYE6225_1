@@ -1,143 +1,114 @@
 package com.csye6225.spring2020.courseservice.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.csye6225.spring2020.courseservice.datamodel.Course;
-import com.csye6225.spring2020.courseservice.datamodel.InMemoryDatabase;
+import com.csye6225.spring2020.courseservice.datamodel.DynamoDbConnector;
 import com.csye6225.spring2020.courseservice.datamodel.Lecture;
-import com.csye6225.spring2020.courseservice.datamodel.Professor;
 import com.csye6225.spring2020.courseservice.datamodel.Program;
 import com.csye6225.spring2020.courseservice.datamodel.Student;
 
 public class CoursesService {
-	static HashMap<String, Course> course_Map = InMemoryDatabase.getCourseDB();
-	static HashMap<String, Professor> professor_Map = InMemoryDatabase.getProfessorDB();
-	static HashMap<String, Student> student_Map = InMemoryDatabase.getStudentDB();
-	static HashMap<String, Program> prog_Map = InMemoryDatabase.getProgDB();
-	static HashMap<String, Lecture> lecture_Map = InMemoryDatabase.getLectureDB();
 	
-	public List<Course> getAllCourses() {
-		// Getting the list
-		ArrayList<Course> list = new ArrayList<>();
-		for (Course s : course_Map.values()) {
-			list.add(s);
-		}
-		return list;
+	DynamoDBMapper mapper; 
+	LecturesService lecturesService;
+	StudentsService studentsService;
+	ProgramService programService;
+	
+	public CoursesService() {
+		mapper = new DynamoDBMapper(DynamoDbConnector.getClient());
+		lecturesService = new LecturesService();
+		studentsService = new StudentsService();
+		programService = new ProgramService();
 	}
 	
-	public List<Course> getCoursesByProfId(String profId) {
-		// Getting the list
-		ArrayList<Course> list = new ArrayList<>();
-		for (Course c : course_Map.values()) {
-			if (c.getProfessorId().contentEquals(profId)) {
-				list.add(c);
-			}
-		}
-		return list;
+	public List<Course> getAllCourses() {
+		DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+		List<Course> scanResult = mapper.scan(Course.class, scanExpression);
+		return scanResult;
 	}
 	
 	public Course getCourse(String courseCode) {
-		return course_Map.getOrDefault(courseCode, null);
+		Course result = mapper.load(Course.class, courseCode);
+		return result;
 	}
 	
 	public List<Lecture> getLecturesByCourse(String courseCode) {
-		if (!course_Map.containsKey(courseCode)) {
+		Course course = getCourse(courseCode);
+		if (course == null) {
 			return null;
 		}
-		Course course = course_Map.getOrDefault(courseCode, null);
 		List<String> lectureIds = course.getLectureIds();
-		List<Lecture> lectures = new ArrayList<>();
-		for (String id : lectureIds) {
-			lectures.add(lecture_Map.get(id));
-		}
-		return lectures;
-	}
-	
-	public List<Student> getStudentsByCourse(String courseCode) {
-		if (!course_Map.containsKey(courseCode)) {
-			return null;
-		}
-		Course course = course_Map.getOrDefault(courseCode, null);
-		List<String> studentIds = course.getRoster();
-		List<Student> students = new ArrayList<>();
-		for (String id : studentIds) {
-			students.add(student_Map.get(id));
-		}
-		return students;
+		return lecturesService.getLectures(lectureIds);
 	}
 	
 	public Course deleteCourse(String courseCode) {
-		Course deletedCourse = course_Map.get(courseCode);
-		course_Map.remove(courseCode);
+		Course deletedCourse = getCourse(courseCode);
+		mapper.delete(deletedCourse);
 		return deletedCourse;
 	}
 	
 	public Course addCourse(Course c) {
-		if (!student_Map.containsKey(c.getStudentTAId())) {
-			return null;
-		}
-		if (!professor_Map.containsKey(c.getProfessorId())) {
-			return null;
-		}
 		Course course = new Course(c.getCourseCode(), c.getCourseName(), c.getProfessorId(), c.getStudentTAId());
-		course_Map.put(course.getCourseCode(), course);
+		mapper.save(course);
 		return course;
 	}
 	
 	public Course updateCourseInformation(String courseCode, Course newCourse) {
-		Course c = course_Map.get(courseCode);
+		Course c = getCourse(courseCode);
+		if(c == null) {
+			return null;
+		}
 		try {
 			c.updateInfo(newCourse);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			return null;
 		}
-		course_Map.put(courseCode, c);
+		mapper.save(c);
 		return c;
 	}
 	
 	public Course enrollStudent(String courseCode, String studentId) {
-		Course c = course_Map.get(courseCode);
-		if (!course_Map.containsKey(courseCode)) {
+		Course course = getCourse(courseCode);
+		if (course == null) {
 			return null;
 		}
-		if (!student_Map.containsKey(studentId)) {
+		Student student = studentsService.getStudent(studentId);
+		String programCode = student.getProgramCode();
+		Program prog = programService.getProgram(programCode);
+		if (!prog.getCourseCodes().contains(courseCode)) {
 			return null;
 		}
-		Student s = student_Map.get(studentId);
-		String programCode = s.getProgramCode();
-		Program prog = prog_Map.get(programCode);
-		if (!prog.getCourses().contains(courseCode)) {
-			return null;
-		}
-		c.enrollStudent(studentId);
-		course_Map.put(courseCode, c);
-		return c;
+		course.enrollStudent(studentId);
+		mapper.save(course);
+		return course;
 	}
 	
 	public Course addmessageToBoard(String courseCode, String message) {
-		Course c = course_Map.get(courseCode);
-		if (!course_Map.containsKey(courseCode)) {
+		Course course = getCourse(courseCode);
+		if (course == null) {
 			return null;
 		}
-		String boardMsg = c.getBoard();
+		String boardMsg = course.getBoard();
 		boardMsg += "\n" + message; 
-		c.setBoard(boardMsg);
-		course_Map.put(courseCode, c);
-		return c;
+		course.setBoard(boardMsg);
+		mapper.save(course);
+		return course;
 	}
 	
 	public Course addLecture(String courseCode, String lectureId) {
-		Course c = course_Map.get(courseCode);
-		if (!course_Map.containsKey(courseCode)) {
+		Course course = getCourse(courseCode);
+		if (course == null) {
 			return null;
 		}
-		if (!lecture_Map.containsKey(lectureId)) {
+		Lecture lecture = lecturesService.getLecture(lectureId);
+		if (lecture == null) {
 			return null;
 		}
-		c.addLecture(lectureId);
-		course_Map.put(courseCode, c);
-		return c;
+		course.addLecture(lectureId);
+		mapper.save(course);
+		return course;
 	}
 }

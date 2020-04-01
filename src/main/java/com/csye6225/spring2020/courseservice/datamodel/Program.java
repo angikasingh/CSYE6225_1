@@ -4,6 +4,11 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+
+@DynamoDBTable(tableName="Program")
 public class Program {
 	private String programCode;
 	private String programName;
@@ -19,6 +24,7 @@ public class Program {
 		this.courseCodes = new ArrayList<>();
 	}
 
+	@DynamoDBHashKey(attributeName="programCode")
 	public String getProgramCode() {
 		return programCode;
 	}
@@ -27,6 +33,7 @@ public class Program {
 		this.programCode = programCode;
 	}
 
+	@DynamoDBAttribute(attributeName="programName")
 	public String getProgramName() {
 		return programName;
 	}
@@ -35,8 +42,13 @@ public class Program {
 		this.programName = programName;
 	}
 
-	public List<String> getCourses() {
+	@DynamoDBAttribute(attributeName="courseCodes")
+	public List<String> getCourseCodes() {
 		return courseCodes;
+	}
+	
+	public void setCourseCodes(List<String> courseCodes) {
+		this.courseCodes = courseCodes;
 	}
 
 	public void addCourse(String courseCode) {

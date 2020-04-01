@@ -24,11 +24,8 @@ public class CoursesResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Course> getCoursesByProfessor(@QueryParam("profId") String profId) {
-		if (profId == null) {
-			return courseService.getAllCourses();
-		}
-		return courseService.getCoursesByProfId(profId);
+	public List<Course> getAllCourses() {
+		return courseService.getAllCourses();
 	}
 	
 	@GET
@@ -45,14 +42,6 @@ public class CoursesResource {
 	public List<Lecture> getLecturesByCourse(@PathParam("courseCode") String courseCode) {
 		System.out.println("Course Resource: Looking for: " + courseCode);
 		return courseService.getLecturesByCourse(courseCode);
-	}
-	
-	@GET
-	@Path("/{courseCode}/students")
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<Student> getStudentsByCourse(@PathParam("courseCode") String courseCode) {
-		System.out.println("Course Resource: Looking for: " + courseCode);
-		return courseService.getStudentsByCourse(courseCode);
 	}
 	
 	@DELETE

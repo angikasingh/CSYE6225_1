@@ -2,8 +2,14 @@ package com.csye6225.spring2020.courseservice.datamodel;
 
 import java.lang.reflect.Field;
 import java.util.Date;
-import java.util.UUID;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+
+
+@DynamoDBTable(tableName="Professor")
 public class Professor {
 	private String professorId;
 	private String alias;
@@ -27,6 +33,7 @@ public class Professor {
 		this.email = String.format("%s@example.com", getAlias());
 	}
 
+	@DynamoDBAttribute(attributeName="firstName")
 	public String getFirstName() {
 		return firstName;
 	}
@@ -35,6 +42,7 @@ public class Professor {
 		this.firstName = firstName;
 	}
 
+	@DynamoDBAttribute(attributeName="department")
 	public String getDepartment() {
 		return department;
 	}
@@ -43,18 +51,27 @@ public class Professor {
 		this.department = department;
 	}
 
+	
+	@DynamoDBHashKey(attributeName="professorId")
 	public String getProfessorId() {
 		return professorId;
 	}
 
-	public void setProfessorId() {
-		this.professorId = UUID.randomUUID().toString();
+	public void setProfessorId(String professorId) {
+		this.professorId = professorId;
 	}
 
+	@DynamoDBAttribute(attributeName="alias")
 	public String getAlias() {
 		return alias;
 	}
+	
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
 
+	
+	@DynamoDBAttribute(attributeName="joiningDate")
 	public String getJoiningDate() {
 		return joiningDate;
 	}
@@ -63,20 +80,23 @@ public class Professor {
 		this.joiningDate = joiningDate;
 	}
 
+	@DynamoDBAttribute(attributeName="email")
 	public String getEmail() {
 		return email;
 	}
 
-	public void setEmail() {
-		this.email = String.format("%s@example.com", getAlias());
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
+	@DynamoDBIgnore
 	@Override
 	public String toString() {
 		return "professorId=" + getProfessorId() + "alias=" + getAlias() + ", firstName=" + getFirstName()
 				+ ", department=" + getDepartment() + ", joiningDate=" + getJoiningDate() + ", email=" + getEmail();
 	}
 
+	@DynamoDBAttribute(attributeName="lastName")
 	public String getLastName() {
 		return lastName;
 	}

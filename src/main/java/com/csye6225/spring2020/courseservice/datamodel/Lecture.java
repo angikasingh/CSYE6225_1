@@ -3,6 +3,11 @@ package com.csye6225.spring2020.courseservice.datamodel;
 import java.lang.reflect.Field;
 import java.util.Date;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+
+@DynamoDBTable(tableName="Lecture")
 public class Lecture {
 	private String id;
 	private String notes;
@@ -20,10 +25,15 @@ public class Lecture {
 		this.lectureDate = new Date().toString();
 	}
 	
-	public String getid() {
+	@DynamoDBHashKey(attributeName="id")
+	public String getId() {
 		return id;
 	}
+	public void setId(String id) {
+		this.id = id;
+	}
 
+	@DynamoDBAttribute(attributeName="notes")
 	public String getNotes() {
 		return notes;
 	}
@@ -32,6 +42,7 @@ public class Lecture {
 		this.notes = notes;
 	}
 
+	@DynamoDBAttribute(attributeName="associatedMaterials")
 	public String getAssociatedMaterials() {
 		return associatedMaterials;
 	}
@@ -40,6 +51,7 @@ public class Lecture {
 		this.associatedMaterials = associatedMaterials;
 	}
 
+	@DynamoDBAttribute(attributeName="lectureDate")
 	public String getLectureDate() {
 		return lectureDate;
 	}

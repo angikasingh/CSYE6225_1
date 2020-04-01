@@ -23,11 +23,8 @@ public class ProfessorsResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Professor> getProfessorsByDepartment(@QueryParam("department") String department) {
-		if (department == null) {
-			return profService.getAllProfessors();
-		}
-		return profService.getProfessorsByDepartment(department);
+	public List<Professor> getAllProfessors() {
+		return profService.getAllProfessors();
 
 	}
 
