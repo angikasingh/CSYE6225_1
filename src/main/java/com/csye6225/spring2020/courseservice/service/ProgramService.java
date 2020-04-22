@@ -3,10 +3,7 @@ package com.csye6225.spring2020.courseservice.service;
 import java.util.List;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
-import com.csye6225.spring2020.courseservice.datamodel.Course;
 import com.csye6225.spring2020.courseservice.datamodel.DynamoDbConnector;
-import com.csye6225.spring2020.courseservice.datamodel.InMemoryDatabase;
-import com.csye6225.spring2020.courseservice.datamodel.Professor;
 import com.csye6225.spring2020.courseservice.datamodel.Program;
 
 public class ProgramService {
